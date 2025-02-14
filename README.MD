@@ -23,10 +23,7 @@ open the chrome the devtool from step devtools step 2 and copy the token value
 ### Example:
 ```sh 
 http://user1:pass1@192.168.1.1:8080
-http://user2:pass2@192.168.1.2:8080 
-http://user3:pass3@192.168.1.3:8080 
-http://user4:pass4@192.168.1.4:8080 
-http://user5:pass5@192.168.1.5:8080
+```
 
 # Usage
 ```sh
