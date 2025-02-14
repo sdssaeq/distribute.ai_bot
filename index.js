@@ -182,48 +182,60 @@ async function websocket(token, proxy) {
 
   const url = `wss://ws.distribute.ai/?token=${token}&version=0.1.23&platform=extension&lastConnectionId=`;
   const agent = new HttpsProxyAgent(proxy);
-  const ws = new WebSocket(url, { agent });
 
-  ws.on("open", () => {
-    console.log("Connected to WebSocket");
-    const message1 = JSON.stringify(generateHearbeatMessage());
-    ws.send(message1);
-    console.log("Sending HeartBeat");
+  let retryCount = 0;
 
-    const message2 = JSON.stringify(
-      generateSystemMessage(CpuName, GpuName, machineId)
-    );
-    ws.send(message2);
-    console.log("Sending System Info");
+  function connect() {
+    const ws = new WebSocket(url, { agent });
 
-    // Send first message after 1 minute
-    setInterval(() => {
+    ws.on("open", () => {
+      console.log("Connected to WebSocket");
+      retryCount = 0; // Reset retry counter on successful connection
+
       const message1 = JSON.stringify(generateHearbeatMessage());
       ws.send(message1);
       console.log("Sending HeartBeat");
-    }, 60000);
 
-    // Send second message after 1 hour
-    setInterval(() => {
       const message2 = JSON.stringify(
         generateSystemMessage(CpuName, GpuName, machineId)
       );
       ws.send(message2);
       console.log("Sending System Info");
-    }, 3600000);
-  });
 
-  ws.on("message", (data) => {
-    console.log("Message from server:", data.toString());
-  });
+      // Send first message every 1 minute
+      setInterval(() => {
+        const message1 = JSON.stringify(generateHearbeatMessage());
+        ws.send(message1);
+        console.log("Sending HeartBeat");
+      }, 60000);
 
-  ws.on("error", (error) => {
-    console.error("WebSocket Error:", error);
-  });
+      // Send second message every 1 hour
+      setInterval(() => {
+        const message2 = JSON.stringify(
+          generateSystemMessage(CpuName, GpuName, machineId)
+        );
+        ws.send(message2);
+        console.log("Sending System Info");
+      }, 3600000);
+    });
 
-  ws.on("close", () => {
-    console.log("Socket Close Something error");
-  });
+    ws.on("message", (data) => {
+      console.log("Message from server:", data.toString());
+    });
+
+    ws.on("error", (error) => {
+      console.error("WebSocket Error:", error);
+    });
+
+    ws.on("close", () => {
+      console.log("Socket closed. Reconnecting...");
+      retryCount++;
+      const retryDelay = Math.min(5000, Math.pow(2, retryCount) * 1000); // Exponential backoff with max 30s
+      setTimeout(connect, retryDelay);
+    });
+  }
+
+  connect();
 }
 
 async function main() {
@@ -232,7 +244,7 @@ async function main() {
   const check = await checkProxy();
   for (let i = 0; i < token.length; i++) {
     if (check) {
-      await websocket(token[i], proxy[i]);
+      await websocket(token[i], proxy[0]);
       console.log("\x1b[32m[PROXY]\x1b[0m");
     } else {
       await websocket(token[i]);
