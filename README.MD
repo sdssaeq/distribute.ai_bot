@@ -17,8 +17,16 @@ go to https://dashboard.distribute.ai/provider/statistics
 open the chrome the devtool from step devtools step 2 and copy the token value
 
 # Proxy
-proxy.txt format http://username:pass@ip:port use static
-PROXY & TOKEN MUST SAME OR EQUAL IF U HAVE 5 TOKEN LIST THEN PROXY 5 LIST
+- Use **static** proxies.
+- **PROXY** and **TOKEN** counts must be the same.  
+  If you have 5 tokens, then you must have 5 proxies.
+### Example:
+```sh 
+http://user1:pass1@192.168.1.1:8080
+http://user2:pass2@192.168.1.2:8080 
+http://user3:pass3@192.168.1.3:8080 
+http://user4:pass4@192.168.1.4:8080 
+http://user5:pass5@192.168.1.5:8080
 
 # Usage
 ```sh
