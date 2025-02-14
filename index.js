@@ -244,7 +244,7 @@ async function main() {
   const check = await checkProxy();
   for (let i = 0; i < token.length; i++) {
     if (check) {
-      await websocket(token[i], proxy[0]);
+      await websocket(token[i], proxy[i]);
       console.log("\x1b[32m[PROXY]\x1b[0m");
     } else {
       await websocket(token[i]);
