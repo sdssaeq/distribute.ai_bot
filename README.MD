@@ -35,3 +35,6 @@ git clone https://github.com/sdssaeq/distribute.ai_bot.git
 npm i
 node index.js
 ```
+
+# Telegram
+- https://t.me/spare43
