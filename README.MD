@@ -1,4 +1,9 @@
-# GET TOKEN FROM
+# GET TOKEN FROM providers.js
+- get your web token from debugging its anywhere just look for authorization headers and copy
+- run node providers.js
+- put your token & number token tobe generated
+
+# GET TOKEN FROM CHROME DEVTOOLS
 
 ![1](./pics/1.png)
 
