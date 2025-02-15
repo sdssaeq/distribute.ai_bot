@@ -184,6 +184,8 @@ async function websocket(token, proxy) {
   const agent = new HttpsProxyAgent(proxy);
 
   let retryCount = 0;
+  let heartbeatInterval;
+  let systemInfoInterval;
 
   function connect() {
     const ws = new WebSocket(url, { agent });
@@ -202,15 +204,19 @@ async function websocket(token, proxy) {
       ws.send(message2);
       console.log("Sending System Info");
 
+      // Clear existing intervals if they exist
+      if (heartbeatInterval) clearInterval(heartbeatInterval);
+      if (systemInfoInterval) clearInterval(systemInfoInterval);
+
       // Send first message every 1 minute
-      setInterval(() => {
+      heartbeatInterval = setInterval(() => {
         const message1 = JSON.stringify(generateHearbeatMessage());
         ws.send(message1);
         console.log("Sending HeartBeat");
       }, 60000);
 
       // Send second message every 1 hour
-      setInterval(() => {
+      systemInfoInterval = setInterval(() => {
         const message2 = JSON.stringify(
           generateSystemMessage(CpuName, GpuName, machineId)
         );
