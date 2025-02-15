@@ -158,14 +158,12 @@ async function main() {
     output: process.stdout,
   });
 
-  // Get user input for the token
   const tokenInput = await new Promise((resolve) => {
     rl.question("Enter the token: ", (input) => {
       resolve(input);
     });
   });
 
-  // Get user input for the number of loops
   const loopCountInput = await new Promise((resolve) => {
     rl.question("Enter the number of loops: ", (input) => {
       resolve(parseInt(input, 0));
@@ -174,19 +172,16 @@ async function main() {
 
   rl.close();
 
-  // Validate the loop count input
   if (isNaN(loopCountInput) || loopCountInput <= 0) {
     console.log("Invalid number of loops. Please enter a positive number.");
     return;
   }
 
-  // Main loop
   for (let i = 0; i < loopCountInput; i++) {
     const name = generateRandomName();
     const randomNumber = Math.floor(Math.random() * 900) + 100;
     const { token } = await createProvider(tokenInput, name + randomNumber);
 
-    // Append the token to the file
     fs.appendFile("providergen.txt", token + "\n", (err) => {
       if (err) {
         console.log("Error writing to file", err);
