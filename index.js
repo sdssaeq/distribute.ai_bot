@@ -176,12 +176,15 @@ async function checkProxy() {
 }
 
 async function websocket(token, proxy) {
+  let agent;
+  if (proxy) {
+    agent = new HttpsProxyAgent(proxy);
+  }
   CpuName = getRandomCpu();
   GpuName = getRandomGPU();
   machineId = getRandomHex(32);
 
   const url = `wss://ws.distribute.ai/?token=${token}&version=0.1.23&platform=extension&lastConnectionId=`;
-  const agent = new HttpsProxyAgent(proxy);
 
   let retryCount = 0;
   let heartbeatInterval;
